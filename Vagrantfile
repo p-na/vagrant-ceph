@@ -18,13 +18,13 @@ config = YAML.load_file(config_file)
 Vagrant::Hosts::check_for_ssh_keys
 
 # Set BOX to one of 'openSUSE-13.2', 'Tumbleweed', 'SLE-12'
-BOX = 'SLE_12-SP3'
+BOX = 'sles12-sp3'
 
 # Set INSTALLATION to one of 'ceph-deploy', 'vsm'
 INSTALLATION = 'salt'
 
 # Set CONFIGURATION to one of 'default', 'small', 'iscsi' or 'economical'
-CONFIGURATION = 'twentythree'
+CONFIGURATION = 'small'
 
 raise "Box #{BOX} missing from config.yml" unless config[BOX]
 raise "Installation #{INSTALLATION} missing for box #{BOX} from config.yml" unless config[BOX][INSTALLATION]
@@ -38,11 +38,11 @@ PREFIX = ''
 
 # Generates a hosts file
 if (INSTALLATION == 'salt') then
-  hosts = Vagrant::Hosts.new(config[CONFIGURATION]['nodes'], 
-                             selected = 'public', domain='ceph', 
+  hosts = Vagrant::Hosts.new(config[CONFIGURATION]['nodes'],
+                             selected = 'public', domain='ceph',
                              aliases={ 'admin' => 'salt' })
 elsif (INSTALLATION == 'openattic') then
-  hosts = Vagrant::Hosts.new(config[CONFIGURATION]['nodes'], 
+  hosts = Vagrant::Hosts.new(config[CONFIGURATION]['nodes'],
                              selected = 'public', domain='ceph')
 else
   hosts = Vagrant::Hosts.new(config[CONFIGURATION]['nodes'])
@@ -59,15 +59,15 @@ def provisioning(hosts, node, config, name)
       # Allow passwordless root access between nodes
       keys = Vagrant::Keys.new(node, config[CONFIGURATION]['nodes'].keys)
       if (name == 'admin') then
-          keys.authorize 
+          keys.authorize
       end
 
       # Add missing repos
-      repos = Vagrant::Repos.new(node, config[BOX][INSTALLATION]['repos'])
-      if ENV.has_key?("CLEAN_ZYPPER_REPOS") or !provisioned?(name)
-        repos.clean
-      end
-      repos.add
+      # repos = Vagrant::Repos.new(node, config[BOX][INSTALLATION]['repos'])
+      # if ENV.has_key?("CLEAN_ZYPPER_REPOS") or !provisioned?(name)
+      #   repos.clean
+      # end
+      # repos.add
 
       # Copy custom files 
       files = Vagrant::Files.new(node, INSTALLATION, name, 

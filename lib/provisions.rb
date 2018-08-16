@@ -15,6 +15,7 @@ module Vagrant
     def initialize(node, repos)
       @node = node
       @cmds = []
+	  return if repos.nil?
       repos.keys.each do |repo|
         # Use shell short circuit to determine if repo already exists
         @cmds << "zypper lr \'#{repo}\' | grep -sq ^Name || zypper ar \'#{repos[repo]}\' \'#{repo}\'"

@@ -18,10 +18,12 @@ def libvirt_settings(provider, config, name)
         provider.host = 'localhost'
         provider.username = 'root'
 
+		provider.uri = 'qemu:///system'
+		# provider.driver = 'qemu'
 
         # Use DSA key if available, otherwise, defaults to RSA
         provider.id_ssh_key_file = 'id_dsa' if File.exists?("#{ENV['HOME']}/.ssh/id_dsa")
-        provider.connect_via_ssh = true
+        provider.connect_via_ssh = false
 
         # Libvirt pool and prefix value
         provider.storage_pool_name = 'default'

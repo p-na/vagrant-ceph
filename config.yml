@@ -577,24 +577,9 @@ SLE_12-SP2:
 ########################################
 # SLE 12 SP3
 ########################################
-SLE_12-SP3:
+sles12-sp3:
   salt:
     repos:
-      'sle-sdk': 'http://192.168.121.1/repo/products/sle-sdk-12-SP1/product'
-      'sle-sdk update': 'http://192.168.121.1/repo/updates/sle-sdk-12-SP1/update'
-      #'SLE 12 SP2': 'http://192.168.121.1/repo/products/SLE_12-SP2/product'
-      'SLE 12 SP3': 'http://192.168.121.1/repo/products/SLE_12-SP3/product'
-      #'SLE 12 SP2 update': 'http://192.168.121.1/repo/updates/SLE_12-SP2/update'
-      'SLE 12 SP3 update': 'http://192.168.121.1/repo/updates/SLE_12-SP3/update'
-      #'SES4': 'http://192.168.121.1/repo/products/storage/product'
-      #'SES4 Update': 'http://192.168.121.1/repo/updates/storage/update'
-      'SES5': 'http://192.168.121.1/repo/ses5/product'
-      #'SES5': 'http://download.suse.de/ibs/SUSE:/SLE-12-SP2:/Update:/Products:/SES5/standard/'
-      'kmroz': 'http://download.opensuse.org/repositories/home:/k_mroz/openSUSE_Leap_42.1/'      
-      #'SES4 Devel': 'http://192.168.121.1/repo/devel/ses4/SLE12_SP2'
-      #'SES3.0 Update': 'http://192.168.121.1/repo/updates/ses-3.0/standard'
-      #'systemsmanagement': 'http://192.168.121.1/repo/systemsmanagement:/saltstack:/products/SLE_12_SP2'
-      #'systemsmanagement': 'http://widehat.opensuse.org/repositories/systemsmanagement:/saltstack:/products/SLE_12_SP2'
     packages:
       all:
         - vim
@@ -604,7 +589,6 @@ SLE_12-SP3:
       admin:
         - salt-master
         - ntp
-        - tree
       calamari:
         #- salt-master
         #- postgresql93-9.3.8-8.1
@@ -621,7 +605,8 @@ SLE_12-SP3:
     commands:
       admin:
         - zypper -n in -t pattern Basis-Devel
-        - zypper -n in /tmp/deepsea-*.noarch.rpm
+        # - zypper -n in /tmp/deepsea-*.noarch.rpm
+        - zypper -n in deepsea
         - systemctl start ntpd
         - systemctl enable ntpd
         - systemctl start salt-master
