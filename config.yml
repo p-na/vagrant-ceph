@@ -580,25 +580,19 @@ SLE_12-SP2:
 sles12-sp3:
   salt:
     repos:
+      # - http://download.opensuse.org/repositories/science/SLE_12/science.repo
+      - https://download.opensuse.org/repositories/devel:languages:python/SLE_12_SP3/devel:languages:python.repo
     packages:
       all:
         - vim
-          #- vim-data
-          #- python-setuptools
+        - vim-data
         - salt-minion
+        - man-pages
+        - man
+        # - python2-pip
       admin:
         - salt-master
         - ntp
-      calamari:
-        #- salt-master
-        #- postgresql93-9.3.8-8.1
-        #- calamari-server
-      client1:
-        - multipath-tools
-        - nfs-client
-      client2:
-        - multipath-tools
-        - nfs-client
     files:
       all: false
       admin: true
@@ -616,12 +610,13 @@ sles12-sp3:
         - chown -R salt:salt /srv/pillar/ceph /srv/salt/ceph
         - chmod 1777 /tmp
         - systemctl restart salt-minion
+        - "sed -i \"s/^deepsea_minions.*$/deepsea_minions: '*'/g\" /srv/pillar/ceph/deepsea_minions.sls"
+        - salt '*' test.ping
+        - salt-run state.orch ceph.stage.0
+        - salt-run state.orch ceph.stage.1
       all:
         - systemctl restart salt-minion
         - systemctl enable salt-minion
-      calmari:
-        - systemctl start salt-master
-        - systemctl enable salt-master
 ########################################
 # Configuration Section
 ########################################
@@ -737,6 +732,56 @@ small:
       hds: 2
     data3:
       hds: 2
+
+ganesha:
+  description: "admin, 1 monitor, 3 data nodes, 2 ganesha, 2 rgw"
+  nodes:
+    admin:
+      management: 192.168.1.254
+      public:  172.16.1.254
+      cluster: 172.16.2.254
+    mon1:
+      management: 192.168.1.11
+      public:  172.16.1.11
+      cluster: 172.16.2.11
+    data1:
+      management: 192.168.1.21
+      public:  172.16.1.21
+      cluster: 172.16.2.21
+    data2:
+      management: 192.168.1.22
+      public:  172.16.1.22
+      cluster: 172.16.2.22
+    data3:
+      management: 192.168.1.23
+      public:  172.16.1.23
+      cluster: 172.16.2.23
+    ganesha1:
+      management: 192.168.1.24
+      public:  172.16.1.24
+      cluster: 172.16.2.24
+    ganesha2:
+      management: 192.168.1.25
+      public:  172.16.1.25
+      cluster: 172.16.2.25
+    rgw1:
+      management: 192.168.1.26
+      public:  172.16.1.26
+      cluster: 172.16.2.26
+    rgw2:
+      management: 192.168.1.27
+      public:  172.16.1.27
+      cluster: 172.16.2.27
+  memory:
+    admin: 2048
+  disks:
+    data1:
+      hds: 2
+    data2:
+      hds: 2
+    data3:
+      hds: 2
+
 iscsi:
   description: "admin, 2 clients, 3 monitors, 5 data nodes, 3 gateways, 2 mds and calamari"
   nodes:

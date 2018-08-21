@@ -24,7 +24,7 @@ BOX = 'sles12-sp3'
 INSTALLATION = 'salt'
 
 # Set CONFIGURATION to one of 'default', 'small', 'iscsi' or 'economical'
-CONFIGURATION = 'small'
+CONFIGURATION = 'ganesha'
 
 raise "Box #{BOX} missing from config.yml" unless config[BOX]
 raise "Installation #{INSTALLATION} missing for box #{BOX} from config.yml" unless config[BOX][INSTALLATION]
@@ -69,18 +69,18 @@ def provisioning(hosts, node, config, name)
       # end
       # repos.add
 
-      # Copy custom files 
-      files = Vagrant::Files.new(node, INSTALLATION, name, 
+      # Copy custom files
+      files = Vagrant::Files.new(node, INSTALLATION, name,
                                  config[BOX][INSTALLATION]['files'])
       files.copy
 
       # Install additional/unique packages
-      pkgs = Vagrant::Packages.new(node, name, 
+      pkgs = Vagrant::Packages.new(node, name,
                                    config[BOX][INSTALLATION]['packages'])
       pkgs.install
 
       # Run commands
-      commands = Vagrant::Commands.new(node, name, 
+      commands = Vagrant::Commands.new(node, name,
                                        config[BOX][INSTALLATION]['commands'])
       commands.run
 
@@ -90,7 +90,7 @@ Vagrant.configure("2") do |vconfig|
   vconfig.vm.box = BOX
 
   # Keep admin at the end for provisioning
-  nodes = config[CONFIGURATION]['nodes'].keys.reject{|i| i == 'admin'} 
+  nodes = config[CONFIGURATION]['nodes'].keys.reject{|i| i == 'admin'}
 
   nodes.each do |name|
     vm_name = PREFIX + name
@@ -130,6 +130,4 @@ Vagrant.configure("2") do |vconfig|
     provisioning(hosts, node, config, name)
 
   end
-   
 end
-
